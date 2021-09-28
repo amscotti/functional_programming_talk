@@ -1,40 +1,493 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+	<title>Functional Programming</title>
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+	<style>
+		.container{
+		  display: grid;
+		  grid-auto-flow: column;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h2 class="r-fit-text">Functional Programming</h2>
+				<h1>🐱‍💻</h1>
+			</section>
+			<section>
+				<h2>Clojure</h2>
+				<img src="https://imgs.xkcd.com/comics/lisp_cycles.png"/>
+				<pre>
+					<code data-trim data-noescape class="language-clojure">
+						(defn add-joke-about-parentheses [{title :title from :from id :id}]
+							(let [url (str "https://" from "/" id)]
+								(str title " from " from " - " url)))
+
+						(add-joke-about-parentheses {:title "Lisp Cycles"
+																				 :from "xkcd.com"
+																				 :id 297})
+					</code>
+				</pre>
+			</section>
+
+
+			<section>
+				<h2>Overview</h2>
+				<ul>
+					<li>⛰️ High level overview</li>
+					<li>🌳 FP Languages</li>
+					<li>🤯 How does this help?</li>
+				</ul>
+			</section>
+			
+			<section>
+				<h2 class="r-fit-text">Let's talk about functions!</h2>
+				<h1>🥳</h1>
+			</section>
+			<section>
+				<section>
+					<h2 class="r-fit-text">Higher Order Functions</h2>
+					<h1>👩‍🎓</h1>
+				</section>
+				<section>
+					<p>Functions are able to return a function as its result</p>
+					<pre class="fragment">
+						<code data-trim data-noescape class="language-js">
+							const greeter = (greeting) => {
+								return (name) => `${greeting} ${name}`; 
+							}
+							
+							const hi = greeter("Hi! My name is");
+							
+							hi("John Doe"); // "Hi! My name is John Doe"
+						</code>
+					</pre>
+				</section>
+				<section>
+					<p>Functions are able to take one or more functions as arguments</p>
+					<pre class="fragment">
+						<code data-trim data-noescape class="language-js">
+							const person = { first: "John", last: "Doe", age: 27 };
+
+							const getName = d => `${d.first} ${d.last}`;
+
+							const getAge = d => d.age;
+							
+							const printFn = (fn, data) => {
+								console.log(fn(data));
+							}
+							
+							printFn(getName, person); // John Doe
+							printFn(getAge, person); // 27
+						</code>
+					</pre>
+				</section>
+				<section>
+					<p>Built in examples in JavaScript</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							const array = [1, 2, 3, 4, 5];
+							
+							const square = i => i * i;
+							const isEven = i => i % 2 === 0;
+							const print = i => console.log(i);
+
+							array
+								.map(square)
+								.filter(isEven)
+								.forEach(print);
+						</code>
+					</pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2 class="r-fit-text">Pure functions</h2>
+					<h1>😇</h1>
+				</section>
+				<section>
+					<p>The function has no side effects</p>
+					<p>The function returned value is the same for the same input</p>
+				</section>
+				<section>
+					<p>Basic Pure Function</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const fn = (a, b) => a + b;
+							</script>
+						</code>
+					</pre>
+					<p>and</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const fn = (a, b) => a + b;
+
+								const something = (a) => {
+									return fn(a, 7);
+								}
+							</script>
+						</code>
+					</pre>
+				</section>
+				<section>
+					<p>Impure Functions</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								let something = 0;
+
+								const fn = (a, b) => {
+									something++;
+									return a + b;
+								}
+							</script>
+						</code>
+					</pre>
+					<p>and</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const fn = () => Math.floor((Math.random() * 10) + 1);
+							</script>
+						</code>
+					</pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2 class="r-fit-text">Partial Function Application</h2>
+					<h1>🧩</h1>
+				</section>
+
+				<section>
+					<h2 class="r-fit-text">Partial function application is the ability to take a function with many parameters and apply arguments to some of the parameters to create a new function.</h2>
+				</section>
+
+				<section>
+					<p></p>
+					<pre> 
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const fn = (a, b) => a + b;
+							</script>
+						</code>
+					</pre>
+					<p>To</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const fn = (a) => (b) => a + b;
+							</script>
+						</code>
+					</pre>
+				</section>
+				<section>
+					<p>One of many use cases</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const fn = (a) => (b) => a + b;
+								const add7 = fn(7);
+								
+								[1, 2, 3, 4, 5].map(add7); // [ 8, 9, 10, 11, 12 ]							
+							</script>
+						</code>
+					</pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h2 class="r-fit-text">Functional Programming Languages</h2>
+					<h1>📖</h1>
+				</section>
+				<section>
+					<h2 class="r-fit-text">Adding a lot more functional programming aspects</h2>
+				</section>
+				<section>
+					<h2 class="r-fit-text">Restrictions built into the language</h2>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<h2>Elm</h2>
+					<img width="300" height="300" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Elm_logo.svg/1024px-Elm_logo.svg.png"/>
+				</section>
+
+				<section>
+					<h2>Elm is</h2>
+					<ul>
+						<li>🕸️ For building web applications</li>
+						<li>👩‍💻 ML based language, Like Haskell, OCaml, and F#</li>
+						<li>😇 Purely functional</li>
+						<li>🪨 Immutable</li>
+						<li>✍️ Static typed</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2 class="r-fit-text">The Elm Architecture</h2>
+					<img width="600" src="assets/the-elm-architecture.jpg"/>
+				</section>
+
+				<section>
+					<h2>Redux</h2>
+					<img width="700" src="assets/elm_redux_prior_art.png"/>
+					<br>
+					<a href="https://redux.js.org/understanding/history-and-design/prior-art" target="_blank">https://redux.js.org/understanding/history-and-design/prior-art#elm</a>
+				</section>
+
+				<section>
+					<h2>Vue</h2>
+					<img width="700" src="assets/elm_vue_prior_art.png"/>
+					<br>
+					<a href="https://vuejs.org/v2/guide/comparison.html#Scale" target="_blank">https://vuejs.org/v2/guide/comparison.html#Scale</a>
+				</section>
+
+				
+				<section>
+					<h2>F#</h2>
+					<img width="700" src="assets/elm_fsharp_prior_art.png"/>
+					<br>
+					<a href="https://zaid-ajaj.github.io/the-elmish-book/#/" target="_blank">https://zaid-ajaj.github.io/the-elmish-book/#/</a>
+				</section>
+
+
+				<section>
+					<p>Typed and Partial Function Application🙌</p>
+					<pre>
+						<code data-trim data-noescape class="language-elm">
+							<script type="text/template">
+								isMultiple : Int -> Int -> Bool
+								isMultiple num divisor =
+									num > 0 && (modBy divisor num == 0)
+
+								isMultipleOf5 : Int -> Bool
+								isMultipleOf5 = isMultiple 5
+
+								check : Bool
+								check = isMultipleOf5 25
+							</script>
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<p>Pipes 🏄‍♀️</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<p>3 -> a -> b -> c</p>
+							<script type="text/template">
+								const noPipes = c(b(a(3)));
+							</script>
+						</code>
+					</pre>
+					<p>In Elm this can be write like</p>
+					<pre>
+						<code data-trim data-noescape class="language-elm">
+							<script type="text/template">
+								pipes : Int
+								pipes =
+									3 |> a |> b |> c
+							</script>
+						</code>
+					</pre>
+					<a href="https://tc39.es/proposal-pipeline-operator/" target="_blank">ES Proposal for Pipeline Operator</a>
+				</section>
+
+				<section>
+					<p>Function Composition 🎶</p>
+					<pre>
+						<code data-trim data-noescape class="language-elm">
+							<script type="text/template">
+								greaterThen0 : Int -> Bool
+								greaterThen0 n = n > 0
+								
+								boolToString : Bool -> String
+								boolToString b = if b then "True" else "False"
+								
+								greaterThen0ToString : Int -> String
+								greaterThen0ToString = greaterThen0 >> boolToString
+							</script>
+						</code>
+					</pre>
+				</section>
+				<section>
+					<p>Maybes and Pattern Matching 🪅</p>
+					<pre>
+						<code data-trim data-noescape class="language-elm">
+							<script type="text/template">
+								-- List.head : List a -> Maybe.Maybe a
+
+								getFirstItemInList : List String -> String
+								getFirstItemInList theList =
+									case List.head theList of
+										Nothing ->
+											"Empty list!"
+								
+										Just val ->
+											val
+								
+								firstItem =
+									getFirstItemInList [ "First", "Second" ]
+							</script>
+						</code>
+					</pre>
+				</section>
+
+				<section>
+					<h2>Immutable 🪨</h2>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const runFnThenPrint = (fn) => {
+									const data = { key: "value" };
+									
+									fn(data);
+	
+									console.log(data.key);
+								}
+							</script>
+						</code>
+					</pre>
+					<a href="https://immutable-js.com/" target="_blank">Immutable.js</a>
+					<br>
+					<a href="https://www.youtube.com/watch?v=I7IdS-PbEgI" target="_blank">Immutable Data and React</a>
+				</section>
+
+				<section>
+					<img height="500" src="assets/elm_typed.png"/>
+					<br>
+					<a href="https://elm-lang.org/" target="_blank">elm-lang.org</a>
+				</section>
+				<section>
+					<img height="500" src="assets/elm_pure.png"/>
+					<br>
+					<a href="https://elm-lang.org/" target="_blank">elm-lang.org</a>
+				</section>
+			</section>
+			
+			<section>
+				<section>
+					<h2 class="r-fit-text">So, how does all this help?</h2>
+					<h1>🤔</h1>
+				</section>
+				<section>
+					<h2>Unit testing 🚀</h2>
+				</section>
+				<section>
+					<h2>Code Reuse ♻️</h2>
+				</section>
+				<section>
+					<h2>State 🤹‍♀️</h2>
+				</section>
+				<section>
+					<h2 class="r-fit-text">
+						Emphasis is on specifying what needs to be done <br> 
+						rather than exactly how to do it
+					</h2>
+					<h1>🧑‍💻</h1>
+				</section>
+				<section>
+					<p>Example of this idea</p>
+					<pre>
+						<code data-trim data-noescape class="language-js">
+							<script type="text/template">
+								const array = [1, 2, 3, 4, 5, 6];
+								let countOfEvenSquared = 0;
+
+								for (let i = 0; i <= array.length; i++) {
+									const item = array[i];
+									const isEven = (item * item) % 2 === 0;
+									if (isEven) {
+										countOfEvenSquared++;
+									}
+								}
+							</script>
+						</code>
+					</pre>
+					<pre class="fragment current-visible" data-fragment-index="0">
+						<code data-trim data-noescape class="language-js">
+							const array = [1, 2, 3, 4, 5, 6];
+
+							array
+								.map(i => i * i)
+								.filter(i => i % 2 === 0)
+								.length
+						</code>
+					</pre>					
+				</section>
+				<section>
+					<h2 class="r-fit-text">🐛 Why does this matter?</h2>
+					<p>Commercial software typically has 20 to 30 bugs for every 1,000 lines of code, 
+						according to Carnegie Mellon University's CyLab Sustainable Computing Consortium.</p>
+				</section>
+				<section>
+					<h2>🦖 Out of the Tar Pit</h2>
+					<img width="600" src="assets/out_of_the_tar_pit.png"/>
+					<a href="http://curtclifton.net/papers/MoseleyMarks06a.pdf" target="_blank">http://curtclifton.net/papers/MoseleyMarks06a.pdf</a>
+				</section>
+				<section>
+					<h2>🦖 Out of the Tar Pit</h2>
+					<blockquote cite="http://curtclifton.net/papers/MoseleyMarks06a.pdf">
+						"Functional programming goes a long way towards avoiding the problems of state-derived complexity. This has very significant benefits for testing (avoiding what is normally one of testing’s biggest weaknesses) as well as for reasoning."
+					</blockquote>
+				</section>
+			</section>
+
+			<section>
+				<h2 class="r-fit-text">Why Isn’t Functional Programming the Norm? 📽️</h2>
+				<iframe width="560" height="315" src="https://www.youtube.com/embed/QyJZzq0v7Z4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				<br>
+				<a href="https://www.youtube.com/watch?v=QyJZzq0v7Z4" target="_blank">Richard Feldman</a>
+			</section>
+
+			<section>
+				<h2>Exercism</h2>
+				<img width="600" src="assets/exercism.png"/>
+				<a href="https://exercism.org/" target="_blank">https://exercism.org/</a>
+			</section>
+
+			<section>
+				<h1>The End</h1>
+				<h1>👋</h1>
+				<img src="https://imgs.xkcd.com/comics/lisp.jpg"/>
+			</section>
 		</div>
+	</div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script>
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+		});
+	</script>
+</body>
+
 </html>
